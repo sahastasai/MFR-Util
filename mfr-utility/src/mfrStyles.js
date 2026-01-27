@@ -14,15 +14,33 @@ export const styles = StyleSheet.create({
   headerContainer: {
     marginBottom: 24,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  headerSeal: {
+    position: 'absolute',
+    left: 0,
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 'bold',
     textTransform: 'uppercase',
+    fontFamily: 'Times-Roman',
+    textAlign: 'center',
+    letterSpacing: 2,
   },
-  headerUnit: {
-    fontSize: 12,
-    marginTop: 2,
+  headerSubtitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    fontFamily: 'Times-Roman',
+    textAlign: 'center',
+    letterSpacing: 1.5,
   },
   // 1.75 in from top = 126pt. Page padding is 72pt.
   // We need 54pt more margin to hit 126pt.
@@ -55,7 +73,9 @@ export const styles = StyleSheet.create({
   },
   signatureBlock: {
     marginTop: 36,
-    marginLeft: 280, // Offset to right
+    marginLeft: 'auto',  // Push to the right
+    marginRight: 0,
+    width: 'auto',       // Only take as much width as needed
   },
   signatureText: {
     fontSize: 12,
