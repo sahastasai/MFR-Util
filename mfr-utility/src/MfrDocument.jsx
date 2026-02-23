@@ -1,4 +1,3 @@
-// src/MfrDocument.jsx
 import React from 'react';
 import { Document, Page, Text, View, Image } from '@react-pdf/renderer';
 import { styles } from './mfrStyles';
@@ -42,16 +41,13 @@ const MfrParagraph = ({ number, text, level = 0 }) => (
 );
 
 const MfrSignature = ({ firstName, lastName, middleInitial, rank, branch, title, date }) => {
-  // Generate initials: First initial, Middle initial, Last initial
   const firstInitial = firstName ? firstName.charAt(0) : 'X';
   const middle = middleInitial || 'X';
   const lastInitial = lastName ? lastName.charAt(0) : 'X';
   const initials = `${firstInitial}${middle}${lastInitial}`.toUpperCase();
   
-  // Format the signature line: FIRSTNAME LASTNAME, RANK/MIDDLE, BRANCH
   const signatureLine = `${firstName || ''} ${lastName || ''}, ${rank || ''}/${middleInitial || ''}, ${branch || ''}`;
   
-  // Use the date prop passed from parent
   const dateStr = date || '';
   
   const signedLine = `//${initials}/Signed/${dateStr}//`;
@@ -66,7 +62,6 @@ const MfrSignature = ({ firstName, lastName, middleInitial, rank, branch, title,
   );
 };
 
-// --- Main Document Component ---
 
 export const MfrDocument = ({ data = {} }) => (
   <Document>

@@ -1,4 +1,3 @@
-// src/App.jsx
 import { Buffer } from 'buffer';
 import process from 'process';
 import React, { useState, useEffect } from 'react';
@@ -8,13 +7,11 @@ import { MfrDocument } from './MfrDocument';
 window.Buffer = Buffer;
 window.process = process;
 
-// Military ranks dropdown options
 const RANKS = [
   'BGen', 'Col', 'Lt Col', 'Maj', 'Capt', '1stLt', '2ndLt',
   'MSgt', 'TSgt', 'SSgt', 'SrA', 'A1C', 'Amn', 'Cpl', 'LCpl'
 ];
 
-// 1. Initial Mock Data
 const initialData = {
   unit: "452D AIR MOBILITY WING",
   date: new Date().toISOString().split('T')[0],
@@ -73,7 +70,6 @@ function App() {
     });
   };
 
-  // Fetch CAC data on component mount
   useEffect(() => {
     const fetchCACData = async () => {
       try {
@@ -81,7 +77,6 @@ function App() {
         const result = await response.json();
         
         if (result.success && result.data) {
-          // Update form with CAC data
           setFormData(prev => ({
             ...prev,
             firstName: result.data.firstName || prev.firstName,
@@ -338,7 +333,7 @@ function App() {
         </button>
       </div>
 
-      {/* The PDF Viewer acts like an iframe showing the PDF */}
+      {}
       <PDFViewer style={{ width: '100%', flex: 1 }}>
         <MfrDocument data={mfrData} />
       </PDFViewer>
