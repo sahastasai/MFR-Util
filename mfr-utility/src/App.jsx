@@ -17,7 +17,7 @@ const RANKS = [
 // 1. Initial Mock Data
 const initialData = {
   unit: "452D AIR MOBILITY WING",
-  date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).split('/').reverse().join(' '),
+  date: new Date().toISOString().split('T')[0],
   recipient: "All Personnel",
   subject: "Operational Launch of MFR Utility",
   authorFirstName: "JASKARAN",
@@ -44,10 +44,34 @@ function App() {
     rank: 'Col',
     branch: 'USAF',
     title: '',
-    unit: '452D AIR MOBILITY WING'
+    unit: '452D AIR MOBILITY WING',
+    recipient: 'All Personnel',
+    subject: 'Operational Launch of MFR Utility',
+    date: new Date().toISOString().split('T')[0]
   });
   const [cacStatus, setCacStatus] = useState('loading');
   const [showForm, setShowForm] = useState(false);
+  const addParagraph = () => {
+    setMfrData(prev => ({
+      ...prev,
+      paragraphs: [...prev.paragraphs, { number: "", level: 0, text: "" }]
+    }));
+  };
+
+  const deleteParagraph = (index) => {
+    setMfrData(prev => ({
+      ...prev,
+      paragraphs: prev.paragraphs.filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleParagraphChange = (index, field, value) => {
+    setMfrData(prev => {
+      const updatedParagraphs = [...prev.paragraphs];
+      updatedParagraphs[index][field] = value;
+      return { ...prev, paragraphs: updatedParagraphs };
+    });
+  };
 
   // Fetch CAC data on component mount
   useEffect(() => {
@@ -90,7 +114,10 @@ function App() {
       authorRank: data.rank || formData.rank,
       authorBranch: data.branch || formData.branch,
       authorTitle: data.title || formData.title,
-      unit: data.unit || formData.unit
+      unit: data.unit || formData.unit,
+      recipient: data.recipient || formData.recipient,
+      subject: data.subject || formData.subject,
+      date: data.date || formData.date
     }));
   };
 
@@ -101,7 +128,7 @@ function App() {
   };
 
   return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'row' }}>
       <div style={{ 
         padding: '16px', 
         backgroundColor: '#f5f5f5', 
@@ -147,6 +174,33 @@ function App() {
           fontSize: '13px'
         }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <label>
+              <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Recipient</div>
+              <input 
+                type="text" 
+                value={formData.recipient}
+                onChange={(e) => handleFormChange('recipient', e.target.value)}
+                style={{ width: '100%', padding: '6px', boxSizing: 'border-box' }}
+              />
+            </label>
+            <label>
+              <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Subject</div>
+              <input 
+                type="text" 
+                value={formData.subject}
+                onChange={(e) => handleFormChange('subject', e.target.value)}
+                style={{ width: '100%', padding: '6px', boxSizing: 'border-box' }}
+              />
+            </label>
+            <label>
+              <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Date</div>
+              <input 
+                type="date"
+                value={formData.date}
+                onChange={(e) => handleFormChange('date', e.target.value)}
+                style={{ width: '100%', padding: '6px', boxSizing: 'border-box' }}
+              />
+            </label>
             <label>
               <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>First Name</div>
               <input 
@@ -231,6 +285,59 @@ function App() {
         </div>
       )}
       
+      <div style={{
+        padding: '16px',
+        backgroundColor: '#fafafa',
+        borderBottom: '1px solid #ddd',
+        fontFamily: 'sans-serif',
+        fontSize: '13px',
+        marginBottom: '12px'
+      }}>
+        <h3 style={{ marginBottom: '10px' }}>Edit Paragraphs</h3>
+        {mfrData.paragraphs.map((paragraph, index) => (
+          <div key={index} style={{ marginBottom: '12px' }}>
+            <label>
+              Number:
+              <input 
+                type="text" 
+                value={paragraph.number}
+                onChange={(e) => handleParagraphChange(index, 'number', e.target.value)} 
+                style={{ width: '100%', padding: '6px', marginBottom: '4px' }}
+              />
+            </label>
+            <label>
+              Text:
+              <textarea 
+                value={paragraph.text}
+                onChange={(e) => handleParagraphChange(index, 'text', e.target.value)} 
+                style={{ width: '100%', padding: '6px', marginBottom: '4px' }}
+              />
+            </label>
+            <label>
+              Level:
+              <input 
+                type="number" 
+                value={paragraph.level}
+                onChange={(e) => handleParagraphChange(index, 'level', parseInt(e.target.value))} 
+                style={{ width: '100%', padding: '6px' }}
+              />
+            </label>
+            <button 
+              onClick={() => deleteParagraph(index)}
+              style={{ marginTop: '4px', padding: '6px 12px', backgroundColor: 'red', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              Delete Paragraph
+            </button>
+          </div>
+        ))}
+        <button 
+          onClick={addParagraph}
+          style={{ padding: '8px 16px', backgroundColor: 'green', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+        >
+          Add Paragraph
+        </button>
+      </div>
+
       {/* The PDF Viewer acts like an iframe showing the PDF */}
       <PDFViewer style={{ width: '100%', flex: 1 }}>
         <MfrDocument data={mfrData} />

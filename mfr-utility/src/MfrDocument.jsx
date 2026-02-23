@@ -17,11 +17,11 @@ const MfrHeader = ({ unit, date, recipient, subject }) => (
       </View>
     </View>
     <View style={styles.dateLine}>
-      <Text>{date}</Text>
+      <Text>{date || ''}</Text>
     </View>
     <View style={styles.memoLine}>
       <Text style={styles.memoLabel}>MEMORANDUM FOR</Text>
-      <Text style={styles.memoContent}>{recipient}</Text>
+      <Text style={styles.memoContent}>{recipient || ""}</Text>
     </View>
     <View style={styles.memoLine}>
       <Text style={styles.memoLabel}>FROM:</Text>
@@ -29,7 +29,7 @@ const MfrHeader = ({ unit, date, recipient, subject }) => (
     </View>
     <View style={styles.memoLine}>
       <Text style={styles.memoLabel}>SUBJECT:</Text>
-      <Text style={styles.memoContent}>{subject}</Text>
+      <Text style={styles.memoContent}>{subject || ""}</Text>
     </View>
   </View>
 );
@@ -41,7 +41,7 @@ const MfrParagraph = ({ number, text, level = 0 }) => (
   </View>
 );
 
-const MfrSignature = ({ firstName, lastName, middleInitial, rank, branch, title }) => {
+const MfrSignature = ({ firstName, lastName, middleInitial, rank, branch, title, date }) => {
   // Generate initials: First initial, Middle initial, Last initial
   const firstInitial = firstName ? firstName.charAt(0) : 'X';
   const middle = middleInitial || 'X';
@@ -49,16 +49,12 @@ const MfrSignature = ({ firstName, lastName, middleInitial, rank, branch, title 
   const initials = `${firstInitial}${middle}${lastInitial}`.toUpperCase();
   
   // Format the signature line: FIRSTNAME LASTNAME, RANK/MIDDLE, BRANCH
-  const signatureLine = `${firstName} ${lastName}, ${rank}/${middleInitial}, ${branch}`;
+  const signatureLine = `${firstName || ''} ${lastName || ''}, ${rank || ''}/${middleInitial || ''}, ${branch || ''}`;
   
-  // Today's date in format: DD MMM YY (e.g., 27 Jan 26)
-  const today = new Date();
-  const day = String(today.getDate()).padStart(2, '0');
-  const month = today.toLocaleString('en-US', { month: 'short' });
-  const year = String(today.getFullYear()).slice(-2);
-  const dateStr = `${day} ${month} ${year}`;
+  // Use the date prop passed from parent
+  const dateStr = date || '';
   
-  const signedLine = `//​${initials}/Signed/${dateStr}//`;
+  const signedLine = `//${initials}/Signed/${dateStr}//`;
   
   return (
     <View style={styles.signatureBlock} minPresenceAhead={100} wrap={false}>
@@ -72,7 +68,7 @@ const MfrSignature = ({ firstName, lastName, middleInitial, rank, branch, title 
 
 // --- Main Document Component ---
 
-export const MfrDocument = ({ data }) => (
+export const MfrDocument = ({ data = {} }) => (
   <Document>
     <Page size="LETTER" style={styles.page}>
       
@@ -84,7 +80,7 @@ export const MfrDocument = ({ data }) => (
       />
 
       <View>
-        {data.paragraphs.map((p, i) => (
+        {(data.paragraphs || []).map((p, i) => (
           <MfrParagraph key={i} number={p.number} text={p.text} level={p.level} />
         ))}
       </View>
@@ -96,6 +92,7 @@ export const MfrDocument = ({ data }) => (
         rank={data.authorRank}
         branch={data.authorBranch}
         title={data.authorTitle}
+        date={data.date}
       />
 
       <Text 
